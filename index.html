@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ação SAF — Gestão de Atletas</title>
+<style>
+:root{color-scheme:dark;--bg:#0a0a0a;--card:#151515;--line:#2a2a2a;--tx:#f2f2f2;--mut:#9a9a9a;--red:#d7141a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Segoe UI",Roboto,Arial,sans-serif;min-height:100vh}
+.stripes{height:12px;background:repeating-linear-gradient(-45deg,var(--red) 0 12px,#fff 12px 24px)}
+.stripes.thin{height:6px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;background:#000;flex-wrap:wrap}
+.brand{font-weight:900;font-size:22px;letter-spacing:2px;text-transform:uppercase}
+.brand b{color:var(--red)}
+.who{font-size:13px;color:var(--mut);display:flex;gap:12px;align-items:center}
+.who span strong{color:#fff}
+main{max-width:1100px;margin:0 auto;padding:20px}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{background:var(--red);border:0;color:#fff;padding:10px 18px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-size:13px;border-radius:3px}
+.btn:hover{background:#f01d24}
+.btn.ghost{background:transparent;border:1px solid #555}
+.btn.ghost:hover{border-color:#fff}
+.btn.sm{padding:5px 10px;font-size:11px}
+input,select,textarea{background:#0d0d0d;border:1px solid var(--line);padding:10px;border-radius:3px;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--red);border-color:var(--red)}
+label{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 0,#2a0405,#000 60%)}
+.box{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.box .in{padding:28px}
+.box h1{margin:0 0 4px;font-size:30px;letter-spacing:3px;text-transform:uppercase;text-align:center}
+.box h1 b{color:var(--red)}
+.box p.sub{text-align:center;color:var(--mut);margin:0 0 22px;font-size:13px}
+.f{margin-bottom:14px}
+.err{color:#ff6b6b;font-size:13px;min-height:18px;margin-bottom:8px}
+.tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tab{background:none;border:0;padding:12px 20px;cursor:pointer;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:13px;border-bottom:3px solid transparent;white-space:nowrap}
+.tab.on{color:#fff;border-bottom-color:var(--red)}
+.bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.bar input,.bar select{flex:1;min-width:150px;width:auto}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:4px;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:#000;color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+tr:hover td{background:#1c1c1c}
+.tag{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;background:#333}
+.tag.Ativo{background:#14532d}.tag.Lesionado{background:#7f1d1d}.tag.Emprestado{background:#78350f}.tag.Suspenso{background:#4b5563}
+.empty{padding:40px;text-align:center;color:var(--mut)}
+dialog{background:var(--card);color:var(--tx);border:1px solid var(--red);border-radius:4px;padding:0;width:min(640px,94vw);max-height:92vh}
+dialog::backdrop{background:rgba(0,0,0,.8)}
+dialog form{padding:20px}
+dialog h2{margin:0 0 14px;text-transform:uppercase;letter-spacing:2px;font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.full{grid-column:1/-1}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.cnt{color:var(--mut);font-size:13px;margin-bottom:8px}
+h3{text-transform:uppercase;letter-spacing:2px;margin:24px 0 12px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <div class="box">
+    <div class="stripes"></div>
+    <div class="in">
+      <h1>Ação <b>SAF</b></h1>
+      <p class="sub">Gestão de atletas · Acesso restrito</p>
+      <div class="f"><label for="lc">CPF</label><input id="lc" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" autocomplete="username"></div>
+      <div class="f"><label for="lp">Senha</label><input id="lp" type="password" autocomplete="current-password"></div>
+      <div class="err" id="lerr"></div>
+      <button class="btn" style="width:100%" id="lbtn">Entrar</button>
+    </div>
+    <div class="stripes"></div>
+  </div>
+</section>
+
+<section id="app" class="hide">
+  <div class="stripes"></div>
+  <header>
+    <div class="brand">Ação <b>SAF</b></div>
+    <div class="who"><span id="who"></span><button class="btn ghost sm" id="out">Sair</button></div>
+  </header>
+  <div class="stripes thin"></div>
+  <main>
+    <div class="tabs" id="tabs"></div>
+    <div id="pv">
+      <div class="bar">
+        <input id="q" placeholder="Buscar por nome ou posição…">
+        <select id="fg"><option value="">Todos os gêneros</option><option>Masculino</option><option>Feminino</option></select>
+        <button class="btn" id="add">+ Novo atleta</button>
+      </div>
+      <div class="cnt" id="cnt"></div>
+      <div class="tw"><table><thead><tr><th>Nº</th><th>Nome</th><th>Idade</th><th>Posição</th><th>Gênero</th><th>Status</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+    </div>
+    <div id="uv" class="hide">
+      <h3>Cadastrar usuário</h3>
+      <div class="grid" style="background:var(--card);border:1px solid var(--line);padding:16px;border-radius:4px">
+        <div><label>CPF</label><input id="uc" inputmode="numeric" maxlength="14" placeholder="000.000.000-00"></div>
+        <div><label>Nome</label><input id="un"></div>
+        <div><label>Função</label><select id="ur"></select></div>
+        <div><label>Senha inicial</label><input id="up" type="text"></div>
+        <div class="full"><div class="err" id="uerr"></div><button class="btn" id="uadd">Cadastrar usuário</button></div>
+      </div>
+      <h3>Usuários com acesso</h3>
+      <div class="tw"><table><thead><tr><th>Nome</th><th>CPF</th><th>Função</th><th></th></tr></thead><tbody id="ub"></tbody></table></div>
+    </div>
+  </main>
+</section>
+
+<dialog id="dlg">
+  <form method="dialog" id="pf">
+    <h2 id="dt">Atleta</h2>
+    <div class="grid">
+      <div class="full"><label>Nome completo</label><input id="f_nome" required></div>
+      <div><label>Nascimento</label><input id="f_nasc" type="date" required></div>
+      <div><label>Gênero</label><select id="f_gen"><option>Masculino</option><option>Feminino</option></select></div>
+      <div><label>Posição</label><select id="f_pos"><option>Goleiro(a)</option><option>Zagueiro(a)</option><option>Lateral</option><option>Volante</option><option>Meia</option><option>Ponta</option><option>Atacante</option></select></div>
+      <div><label>Nº da camisa</label><input id="f_num" type="number" min="1" max="99"></div>
+      <div><label>Altura (cm)</label><input id="f_alt" type="number"></div>
+      <div><label>Peso (kg)</label><input id="f_peso" type="number"></div>
+      <div><label>Pé dominante</label><select id="f_pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select></div>
+      <div><label>Status</label><select id="f_st"><option>Ativo</option><option>Lesionado</option><option>Emprestado</option><option>Suspenso</option></select></div>
+      <div class="full"><label>Contato / Responsável</label><input id="f_ct"></div>
+      <div class="full"><label>Observações</label><textarea id="f_obs" rows="3"></textarea></div>
+    </div>
+    <div class="acts"><button type="button" class="btn ghost" id="cancel">Fechar</button><button class="btn" id="save">Salvar</button></div>
+  </form>
+</dialog>
+
+<script>
+const ROLES=["Administrador","Jogadoras","Comissão Técnica","Administrativo","Executivo","Presidência"];
+const CATS=["Profissional","Sub-20","Sub-17"];
+const EDIT=["Administrador","Comissão Técnica","Administrativo"];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}};
+const put=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let mem={};
+async function sha(s){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("asaf:"+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){return"p:"+btoa(s)}}
+const digits=s=>s.replace(/\D/g,"").slice(0,11);
+const fmt=s=>{const d=digits(s);return d.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2")};
+["lc","uc"].forEach(i=>$(i).addEventListener("input",e=>e.target.value=fmt(e.target.value)));
+
+let users=get("asaf_users",[]),players=get("asaf_players",[]),me=null,cat=CATS[0],view="p",editId=null;
+
+async function init(){
+  if(!users.find(u=>u.cpf==="06366084335")){
+    users.unshift({cpf:"06366084335",nome:"Administrador",role:"Administrador",hash:await sha("admin123")});
+    put("asaf_users",users);
+  }
+  try{const s=sessionStorage.getItem("asaf_s");if(s){const u=users.find(x=>x.cpf===s);if(u){me=u;enter();}}}catch(e){}
+}
+async function login(){
+  const c=digits($("lc").value),u=users.find(x=>x.cpf===c);
+  if(u&&u.hash===await sha($("lp").value)){
+    me=u;try{sessionStorage.setItem("asaf_s",c)}catch(e){}
+    $("lerr").textContent="";$("lp").value="";enter();
+  }else $("lerr").textContent="CPF ou senha inválidos.";
+}
+$("lbtn").onclick=login;
+[$("lc"),$("lp")].forEach(i=>i.addEventListener("keydown",e=>{if(e.key==="Enter")login()}));
+$("out").onclick=()=>{me=null;try{sessionStorage.removeItem("asaf_s")}catch(e){}$("app").classList.add("hide");$("login").classList.remove("hide")};
+
+const canEdit=()=>EDIT.includes(me.role),isAdmin=()=>me.role==="Administrador";
+function enter(){
+  $("login").classList.add("hide");$("app").classList.remove("hide");
+  $("who").innerHTML=`<strong>${esc(me.nome)}</strong> · ${esc(me.role)}`;
+  $("add").classList.toggle("hide",!canEdit());
+  $("ur").innerHTML=ROLES.map(r=>`<option>${r}</option>`).join("");
+  view="p";tabs();render();
+}
+function tabs(){
+  let h=CATS.map(c=>`<button class="tab ${view==="p"&&cat===c?"on":""}" data-c="${c}">${c}</button>`).join("");
+  if(isAdmin())h+=`<button class="tab ${view==="u"?"on":""}" data-c="__u">Usuários</button>`;
+  $("tabs").innerHTML=h;
+  $("tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+    if(b.dataset.c==="__u")view="u";else{view="p";cat=b.dataset.c}
+    tabs();render();
+  });
+}
+const age=d=>{if(!d)return"—";const t=new Date(),b=new Date(d);let a=t.getFullYear()-b.getFullYear();if(t<new Date(t.getFullYear(),b.getMonth(),b.getDate()))a--;return a};
+function render(){
+  $("pv").classList.toggle("hide",view!=="p");$("uv").classList.toggle("hide",view!=="u");
+  if(view==="u")return renderUsers();
+  const q=$("q").value.toLowerCase(),g=$("fg").value;
+  const l=players.filter(p=>p.cat===cat&&(!g||p.gen===g)&&(p.nome+" "+p.pos).toLowerCase().includes(q)).sort((a,b)=>a.nome.localeCompare(b.nome));
+  $("cnt").textContent=`${l.length} atleta(s) · ${cat}`;
+  $("tb").innerHTML=l.length?l.map(p=>`<tr><td>${esc(p.num||"—")}</td><td><strong>${esc(p.nome)}</strong></td><td>${age(p.nasc)}</td><td>${esc(p.pos)}</td><td>${esc(p.gen)}</td><td><span class="tag ${esc(p.st)}">${esc(p.st)}</span></td><td style="text-align:right"><button class="btn ghost sm" data-o="${p.id}">${canEdit()?"Editar":"Ver"}</button> ${canEdit()?`<button class="btn sm" data-d="${p.id}">Excluir</button>`:""}</td></tr>`).join(""):`<tr><td colspan="7" class="empty">Nenhum atleta cadastrado nesta categoria.</td></tr>`;
+  $("tb").querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>open(b.dataset.o));
+  $("tb").querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{if(confirm("Excluir este atleta?")){players=players.filter(p=>p.id!==b.dataset.d);put("asaf_players",players);render()}});
+}
+$("q").oninput=render;$("fg").onchange=render;
+const F={nome:"f_nome",nasc:"f_nasc",gen:"f_gen",pos:"f_pos",num:"f_num",alt:"f_alt",peso:"f_peso",pe:"f_pe",st:"f_st",ct:"f_ct",obs:"f_obs"};
+function open(id){
+  editId=id||null;const p=id?players.find(x=>x.id===id):{gen:"Masculino",pos:"Atacante",pe:"Direito",st:"Ativo"};
+  for(const k in F)$(F[k]).value=p[k]??"";
+  $("dt").textContent=id?(canEdit()?"Editar atleta":"Ficha do atleta"):"Novo atleta — "+cat;
+  document.querySelectorAll("#pf input,#pf select,#pf textarea").forEach(e=>e.disabled=!canEdit());
+  $("save").classList.toggle("hide",!canEdit());
+  $("dlg").showModal();
+}
+$("add").onclick=()=>open();
+$("cancel").onclick=()=>$("dlg").close();
+$("pf").addEventListener("submit",e=>{
+  if(!canEdit())return;
+  const p={};for(const k in F)p[k]=$(F[k]).value.trim();
+  if(editId){Object.assign(players.find(x=>x.id===editId),p)}
+  else players.push({...p,id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),cat});
+  put("asaf_players",players);render();
+});
+function renderUsers(){
+  $("ub").innerHTML=users.map(u=>`<tr><td>${esc(u.nome)}</td><td>${fmt(u.cpf)}</td><td>${esc(u.role)}</td><td style="text-align:right">${u.cpf==="06366084335"?"<span class='tag'>Principal</span>":`<button class="btn sm" data-x="${u.cpf}">Remover</button>`}</td></tr>`).join("");
+  $("ub").querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{if(confirm("Remover este usuário?")){users=users.filter(u=>u.cpf!==b.dataset.x);put("asaf_users",users);renderUsers()}});
+}
+$("uadd").onclick=async()=>{
+  if(!isAdmin())return;
+  const c=digits($("uc").value),n=$("un").value.trim(),p=$("up").value;
+  const er=$("uerr");
+  if(c.length!==11)return er.textContent="CPF inválido.";
+  if(!n)return er.textContent="Informe o nome.";
+  if(p.length<6)return er.textContent="A senha deve ter ao menos 6 caracteres.";
+  if(users.some(u=>u.cpf===c))return er.textContent="Este CPF já está cadastrado.";
+  users.push({cpf:c,nome:n,role:$("ur").value,hash:await sha(p)});
+  put("asaf_users",users);er.textContent="";
+  ["uc","un","up"].forEach(i=>$(i).value="");renderUsers();
+};
+init();
+</script>
+</body>
+</html>
